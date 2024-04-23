@@ -70,10 +70,15 @@ unit_restock_time = []
 unit_fixing_time = []
 
 day_restock_times = []
-day_times_broken  = []
+day_times_broken = []
 day_avg_production_time = []
 day_avg_restock_time = []
 day_avg_fixing_time = []
+
+headers = ['Produced Cars', 'Failed Inspection', 'Avg Production Time', 'Restock Times', 'Avg Restock Time',
+           'Broken Stations', 'Avg Fixing Time']
+
+df = pd.DataFrame(columns=headers)
 
 
 def debugLog(level: Debug, msg: str, extra: str = "") -> None:
@@ -257,6 +262,7 @@ class Factory(object):
         self.action = self._env.process(self.produce())
 
     def __str__(self) -> str:
+        global df
         output = "\n============================="
         output += "\nDay: %d" % self._day
         output += "\nFactory %s\n" % self._status
@@ -264,9 +270,9 @@ class Factory(object):
         fail = sum(1 for i in self._storage if i._status == ProductStatus.FAIL)
         ordered = sum(1 for i in self._storage if i._status == ProductStatus.ORDERED)
         incomplete = sum(1 for i in self._storage if i._status == ProductStatus.INCOMPLETE)
-        #output += "\nTotal orders planned: %d" % (len(self._storage))
+        # output += "\nTotal orders planned: %d" % (len(self._storage))
         output += "\nProduced %d items today, but %d failed quality inspection." % (done, fail)
-        #output += "\nOrders left planned: %d \tOrders left on floor: %d" % (ordered, incomplete)
+        # output += "\nOrders left planned: %d \tOrders left on floor: %d" % (ordered, incomplete)
         avg_production_time = sum(production_time) / len(production_time)
         output += "\nTimes restocked during the day: %d" % restock_times
         avg_restock_time = sum(unit_restock_time) / len(unit_restock_time)
@@ -275,7 +281,11 @@ class Factory(object):
         output += "\nAverage restock time: %.2f minutes" % avg_restock_time
         output += "\nUnits broken during the day: %d" % times_broken
         output += "\nAverage fixing time: %.2f minute" % avg_fixing_time
-
+        data = [done, fail, avg_production_time, restock_times, avg_restock_time, times_broken, avg_fixing_time]
+        if df.empty:
+            df = pd.DataFrame([data], columns=headers)
+        else:
+            df = pd.concat([df, pd.DataFrame([data], columns=headers)], ignore_index=True)
         # output += "\nAverage production time: %d seconds" % day_avg_production_time
         # print(day_avg_production_time)
         if (self._status == FactoryStatus.SHUTDOWN):
@@ -352,7 +362,8 @@ class Factory(object):
 
 
 def main() -> None:
-    for day in range(365):
+    desired_days = 1
+    for day in range(1):
         env = simpy.Environment()
         factory = Factory(env, day)
         env.process(factory.shutDown())
@@ -361,6 +372,7 @@ def main() -> None:
         print(factory)
         time.sleep(1)
 
+    print(df)
 
 if __name__ == '__main__':
     main()
