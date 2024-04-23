@@ -1,14 +1,26 @@
 # The-Dashboard
-Project 2 - Graphic Simulation Class
+Project 2 - Graphic Simulation Class - Car Assembly Factory Dashboard
 
+Streamlit is an amazing tool that lets you easily convert your Python scripts into interactive web applications without requiring any web development knowledge. 
+To run the simulation just clone this repository or download the file and run the code using a python interpreter. 
 
-To run the simulation just clone this repository or download the file and run the code using a python interpreter.
+## Installing Streamlit
 
-## Running a Streamlit Application
+There are multiple ways to set up your development environment and install Streamlit. Read below to understand these options. Developing locally with Python installed on your own computer is the most common scenario.
 
-Streamlit is an amazing tool that lets you easily convert your Python scripts into interactive web applications without requiring any web development knowledge.
+## Summary for experts
 
-### Running the Application::
+1. Set up your Python development environment.
+2. Run:
+ ```bash
+pip install streamlit
+```
+3. Validate the installation by running:
+```bash
+pip install streamlit
+```
+
+### Running the Application:
 
 Once you have streamlit installed and are in the directory containing app.py, you can run the application with the following command:
 
