@@ -63,17 +63,22 @@ DEBUG_LEVEL = Debug.ERROR
 
 # Stored data
 
-restock_times = 0
-times_broken = 0
-production_time = []
-unit_restock_time = []
-unit_fixing_time = []
+restock_times = 0       #Number of times that was needad a restock
+times_broken = 0        #Number of times that the product was broken
+production_time = []    #Time that takes to finish the production
+unit_restock_time = []  #Time that takes to restock the orders in the factory
+unit_fixing_time = []   #Time that it takes to fix the broken products
 
-day_restock_times = []
-day_times_broken = []
-day_avg_production_time = []
-day_avg_restock_time = []
-day_avg_fixing_time = []
+
+day_avg_production_time = []    #
+
+
+#Headers= title of the columns of the final data 
+headers = ['Produced Cars', 'Failed Inspection', 'Avg Production Time', 'Restock Times', 'Avg Restock Time',
+           'Broken Stations', 'Avg Fixing Time']
+
+df = pd.DataFrame(columns=headers)
+
 
 headers = ['Produced Cars', 'Failed Inspection', 'Avg Production Time', 'Restock Times', 'Avg Restock Time',
            'Broken Stations', 'Avg Fixing Time']
@@ -84,6 +89,7 @@ df = pd.DataFrame(columns=headers)
 def debugLog(level: Debug, msg: str, extra: str = "") -> None:
     if level.value >= DEBUG_LEVEL.value:
         print(msg + (": " + extra if extra != "" else extra))
+
 
 
 class Product(object):
@@ -363,6 +369,7 @@ class Factory(object):
 
 def main() -> None:
     desired_days = 1
+    #Depending on the number put in the for loop, it is the number of days it will fill the database.
     for day in range(1):
         env = simpy.Environment()
         factory = Factory(env, day)
