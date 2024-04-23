@@ -27,6 +27,6 @@ streamlit run --help
 ```
 
 ### Team Members:
-Edgar Velazquez Mercado
-Pablo Raschid Llamas Aun
-Jose Ivan Andrade Rojas
+1. Edgar Velazquez Mercado
+2. Pablo Raschid Llamas Aun
+3. Jose Ivan Andrade Rojas
