@@ -197,7 +197,7 @@ class Workstation(object):
         if self._product:
             self._product.stopProduction(time)
 
-    def processProd(self) -> simpy.Process:
+    def processProd(self) -> simpy.Process: # type: ignore
         global times_broken
         global restock_times
         try:
@@ -293,7 +293,7 @@ class Factory(object):
     def getWorkstation(self, index: int) -> Workstation:
         return self._workstations[index]
 
-    def orderProduct(self, id: int) -> simpy.Process:
+    def orderProduct(self, id: int) -> simpy.Process: # type: ignore
         if self._status == FactoryStatus.CLOSED:
             return
         prod = Product(id, self._env)
@@ -317,7 +317,7 @@ class Factory(object):
             else:
                 prod.status = ProductStatus.DONE
 
-    def produce(self) -> simpy.Process:
+    def produce(self) -> simpy.Process: # type: ignore
         i = 0
         # for i in range(5):
         while True:
@@ -325,7 +325,7 @@ class Factory(object):
             yield self._env.timeout(0.1)
             i += 1
 
-    def shutDown(self) -> None:
+    def shutDown(self) -> None: # type: ignore
         if random.random() < CLOSE_RATE:
             closing_in = abs(random.normalvariate(12, 1))
             debugLog(Debug.INFO, "Factory will close today in %d units." % closing_in)
