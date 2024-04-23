@@ -4,7 +4,6 @@ Project 2 - Graphic Simulation Class
 
 To run the simulation just clone this repository or download the file and run the code using a python interpreter.
 
-<<<<<<< HEAD
 ## Running a Streamlit Application
 
 Streamlit is an amazing tool that lets you easily convert your Python scripts into interactive web applications without requiring any web development knowledge.
@@ -26,9 +25,8 @@ If you want to learn more about the options that streamlit run offers, you can u
 ```bash
 streamlit run --help
 ```
-=======
-# Team Members:
+
+### Team Members:
 Edgar Velazquez Mercado
 Pablo Raschid Llamas Aun
 Jose Ivan Andrade Rojas
->>>>>>> a8a5567424e7f56d7d62297105ba4ef4efe4f7c4
