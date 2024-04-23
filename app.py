@@ -38,7 +38,6 @@ class FactoryStatus(Enum):
     CLOSED = 2
     SHUTDOWN = 3
 
-# Custom exception classes
 class Product:
     def __init__(self, id, env):
         self._status = ProductStatus.ORDERED
@@ -78,21 +77,22 @@ def generate_production_data(days):
 # Generate data for a year
 data = generate_production_data(365)
 
-# Factory Summary
+# Title
 st.title("Factory Simulation Dashboard")
 
 st.sidebar.title("Dashboard Selection")
 page = st.sidebar.selectbox(
     "Select a Dashboard", 
-    ["Factory Summary", 
+    ["Product Information",
+     "Factory Summary", 
      "Production Time Analysis", 
      "Restocking Time Analysis", 
      "Fixing Time Analysis", 
-     "Production Stage Analysis",
-     "Product Information"]
+     "Production Stage Analysis"
+     ]
 )
 
-# Select a timeframe
+# Timeframes
 timeframe_options = {
     "Week": 7,
     "Month": 30,
@@ -102,26 +102,40 @@ timeframe_options = {
 
 timeframe_choice = st.sidebar.selectbox("Select a Timeframe", list(timeframe_options.keys()))
 timeframe_days = timeframe_options[timeframe_choice]
-
-# Filter data based on the selected timeframe
 filtered_data = data[data["Date"] >= datetime.now() - timedelta(days=timeframe_days)]
 
 # Factory Summary Dashboard
 if page == "Factory Summary":
     st.header("Factory Summary")
-    # Use st.metric for big numbers
-    st.metric("Total Production Records", f"{len(filtered_data)}")
-    st.metric("Total Production Time (avg)", f"{filtered_data['Production Time'].mean():.2f} hours")
-    st.metric("Total Restocking Time (avg)", f"{filtered_data['Restocking Time'].mean():.2f} hours")
-    st.metric("Total Fixing Time (avg)", f"{filtered_data['Fixing Time'].mean():.2f} hours")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Total Production Records", f"{len(filtered_data)}")
+        st.metric("Total Production Time (avg)", f"{filtered_data['Production Time'].mean():.2f} hours")
+        st.metric("Total Restocking Time (avg)", f"{filtered_data['Restocking Time'].mean():.2f} hours")
+        st.metric("Total Fixing Time (avg)", f"{filtered_data['Fixing Time'].mean():.2f} hours")
+
+    with col2:
+        image_url = "https://economictimes.indiatimes.com/thumb/msid-102897652,width-1200,height-900,resizemode-4,imgsize-2145478/ev-manufacturers-have-been-at-the-forefront-of-ev-technology-innovation-that-appeal-to-the-preferences-of-tech-savvy-chinese-consumers-who-like-having-more-intelligent-features-in-cars-.jpg?from=mdr"
+        st.image(image_url, use_column_width=True)
+        image_url = "https://static.wixstatic.com/media/961f25_a6381e36b4d74c19a7afadf9e35c89a4~mv2.jpg/v1/fill/w_980,h_654,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/961f25_a6381e36b4d74c19a7afadf9e35c89a4~mv2.jpg"
+        st.image(image_url, use_column_width=True)
 
 # Production Time Analysis Dashboard
 elif page == "Production Time Analysis":
     st.header("Production Time Analysis")
-    # Change to a line chart for smoother trend visualization
     plt.figure(figsize=(8, 6))
     sns.lineplot(x=filtered_data["Date"], y=filtered_data["Production Time"], color='skyblue')
     plt.title("Production Time Trend")
     plt.xlabel("Date")
     plt.ylabel("Production Time (hours)")
+    st.pyplot(plt)
+
+# Restocking Time Analysis Dashboard
+elif page == "Restocking Time Analysis":
+    st.header("Restocking Time Analysis")
+    plt.figure(figsize=(8, 6))
+    sns.histplot(filtered_data["Restocking Time"], kde=True, color='orange', bins=10)
+    plt.title("Restocking Time Distribution")
+    plt.xlabel("Restocking Time (hours)")
+    plt.ylabel("Frequency")
     st.pyplot(plt)
