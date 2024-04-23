@@ -104,7 +104,7 @@ timeframe_choice = st.sidebar.selectbox("Select a Timeframe", list(timeframe_opt
 timeframe_days = timeframe_options[timeframe_choice]
 filtered_data = data[data["Date"] >= datetime.now() - timedelta(days=timeframe_days)]
 
-# Factory Summary Dashboard
+# Factory Summary Dashboard Page
 if page == "Factory Summary":
     st.header("Factory Summary")
     col1, col2 = st.columns(2)
@@ -120,7 +120,7 @@ if page == "Factory Summary":
         image_url = "https://static.wixstatic.com/media/961f25_a6381e36b4d74c19a7afadf9e35c89a4~mv2.jpg/v1/fill/w_980,h_654,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/961f25_a6381e36b4d74c19a7afadf9e35c89a4~mv2.jpg"
         st.image(image_url, use_column_width=True)
 
-# Production Time Analysis Dashboard
+# Production Time Analysis Dashboard Page
 elif page == "Production Time Analysis":
     st.header("Production Time Analysis")
     plt.figure(figsize=(8, 6))
@@ -130,7 +130,7 @@ elif page == "Production Time Analysis":
     plt.ylabel("Production Time (hours)")
     st.pyplot(plt)
 
-# Restocking Time Analysis Dashboard
+# Restocking Time Analysis Dashboard Page
 elif page == "Restocking Time Analysis":
     st.header("Restocking Time Analysis")
     plt.figure(figsize=(8, 6))
@@ -139,3 +139,32 @@ elif page == "Restocking Time Analysis":
     plt.xlabel("Restocking Time (hours)")
     plt.ylabel("Frequency")
     st.pyplot(plt)
+
+# Fixing Time Analysis Dashboard Page
+if page == "Fixing Time Analysis":
+    st.header("Fixing Time Analysis")
+    fig = px.histogram(
+        filtered_data,
+        x="Fixing Time",
+        nbins=10,
+        title="Fixing Time Histogram",
+        color_discrete_sequence=['#1f77b4'],
+        labels={"Fixing Time": "Fixing Time (hours)"},
+    )
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='LightGray')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='LightGray')
+    fig.update_layout(
+        plot_bgcolor='white',
+        xaxis_title="Fixing Time (hours)",
+        yaxis_title="Frequency",
+        bargap=0.1,
+        title_font_size=20,
+        title_x=0.5,
+    )
+    st.plotly_chart(fig)
+
+# Production Stage Analysis Dashboard Page
+elif page == "Production Stage Analysis":
+    st.header("Production Stage Analysis")
+    fig = px.pie(filtered_data, names="Production Stage", title="Production Stages Distribution")
+    st.plotly_chart(fig)
