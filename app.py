@@ -168,3 +168,25 @@ elif page == "Production Stage Analysis":
     st.header("Production Stage Analysis")
     fig = px.pie(filtered_data, names="Production Stage", title="Production Stages Distribution")
     st.plotly_chart(fig)
+
+# Product Information Dashboard
+if page == "Product Information":
+    st.header("Product Information")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("## Our cars")
+        st.write(
+            "Are made from premium raw materials and go through multiple stages of production. They are known for its high quality and durability."
+        )
+        st.write("#### Production Stages: ")
+        st.write("1. Raw Material Processing")
+        st.write("2. Assembly")
+        st.write("3. Quality Control")
+        st.write("4. Packaging")
+        st.write("5. Distribution")
+
+    with col2:
+        image_url = "https://i.ytimg.com/vi/bTPZ7bqt1_8/maxresdefault.jpg"
+        st.image(image_url, use_column_width=True)
+        image_url = "https://imageio.forbes.com/blogs-images/joannmuller/files/2016/08/tesla-fremont-factory-2-1200x802.jpg?format=jpg&height=600&width=1200&fit=bounds"
+        st.image(image_url, use_column_width=True)
