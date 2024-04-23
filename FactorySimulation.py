@@ -69,10 +69,17 @@ production_time = []    #Time that takes to finish the production
 unit_restock_time = []  #Time that takes to restock the orders in the factory
 unit_fixing_time = []   #Time that it takes to fix the broken products
 
+
 day_avg_production_time = []    #
 
 
 #Headers= title of the columns of the final data 
+headers = ['Produced Cars', 'Failed Inspection', 'Avg Production Time', 'Restock Times', 'Avg Restock Time',
+           'Broken Stations', 'Avg Fixing Time']
+
+df = pd.DataFrame(columns=headers)
+
+
 headers = ['Produced Cars', 'Failed Inspection', 'Avg Production Time', 'Restock Times', 'Avg Restock Time',
            'Broken Stations', 'Avg Fixing Time']
 
@@ -363,7 +370,7 @@ class Factory(object):
 def main() -> None:
     desired_days = 1
     #Depending on the number put in the for loop, it is the number of days it will fill the database.
-    for day in range(2):
+    for day in range(1):
         env = simpy.Environment()
         factory = Factory(env, day)
         env.process(factory.shutDown())
