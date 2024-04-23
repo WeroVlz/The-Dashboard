@@ -63,22 +63,26 @@ DEBUG_LEVEL = Debug.ERROR
 
 # Stored data
 
-restock_times = 0
-times_broken = 0
-production_time = []
-unit_restock_time = []
-unit_fixing_time = []
+restock_times = 0       #Number of times that was needad a restock
+times_broken = 0        #Number of times that the product was broken
+production_time = []    #Time that takes to finish the production
+unit_restock_time = []  #Time that takes to restock the orders in the factory
+unit_fixing_time = []   #Time that it takes to fix the broken products
 
-day_restock_times = []
-day_times_broken  = []
-day_avg_production_time = []
-day_avg_restock_time = []
-day_avg_fixing_time = []
+day_avg_production_time = []    #
+
+
+#Headers= title of the columns of the final data 
+headers = ['Produced Cars', 'Failed Inspection', 'Avg Production Time', 'Restock Times', 'Avg Restock Time',
+           'Broken Stations', 'Avg Fixing Time']
+
+df = pd.DataFrame(columns=headers)
 
 
 def debugLog(level: Debug, msg: str, extra: str = "") -> None:
     if level.value >= DEBUG_LEVEL.value:
         print(msg + (": " + extra if extra != "" else extra))
+
 
 
 class Product(object):
@@ -197,7 +201,7 @@ class Workstation(object):
         if self._product:
             self._product.stopProduction(time)
 
-    def processProd(self) -> simpy.Process:
+    def processProd(self) -> simpy.Process: # type: ignore
         global times_broken
         global restock_times
         try:
@@ -257,6 +261,7 @@ class Factory(object):
         self.action = self._env.process(self.produce())
 
     def __str__(self) -> str:
+        global df
         output = "\n============================="
         output += "\nDay: %d" % self._day
         output += "\nFactory %s\n" % self._status
@@ -264,9 +269,9 @@ class Factory(object):
         fail = sum(1 for i in self._storage if i._status == ProductStatus.FAIL)
         ordered = sum(1 for i in self._storage if i._status == ProductStatus.ORDERED)
         incomplete = sum(1 for i in self._storage if i._status == ProductStatus.INCOMPLETE)
-        #output += "\nTotal orders planned: %d" % (len(self._storage))
+        # output += "\nTotal orders planned: %d" % (len(self._storage))
         output += "\nProduced %d items today, but %d failed quality inspection." % (done, fail)
-        #output += "\nOrders left planned: %d \tOrders left on floor: %d" % (ordered, incomplete)
+        # output += "\nOrders left planned: %d \tOrders left on floor: %d" % (ordered, incomplete)
         avg_production_time = sum(production_time) / len(production_time)
         output += "\nTimes restocked during the day: %d" % restock_times
         avg_restock_time = sum(unit_restock_time) / len(unit_restock_time)
@@ -275,7 +280,11 @@ class Factory(object):
         output += "\nAverage restock time: %.2f minutes" % avg_restock_time
         output += "\nUnits broken during the day: %d" % times_broken
         output += "\nAverage fixing time: %.2f minute" % avg_fixing_time
-
+        data = [done, fail, avg_production_time, restock_times, avg_restock_time, times_broken, avg_fixing_time]
+        if df.empty:
+            df = pd.DataFrame([data], columns=headers)
+        else:
+            df = pd.concat([df, pd.DataFrame([data], columns=headers)], ignore_index=True)
         # output += "\nAverage production time: %d seconds" % day_avg_production_time
         # print(day_avg_production_time)
         if (self._status == FactoryStatus.SHUTDOWN):
@@ -293,7 +302,7 @@ class Factory(object):
     def getWorkstation(self, index: int) -> Workstation:
         return self._workstations[index]
 
-    def orderProduct(self, id: int) -> simpy.Process:
+    def orderProduct(self, id: int) -> simpy.Process: # type: ignore
         if self._status == FactoryStatus.CLOSED:
             return
         prod = Product(id, self._env)
@@ -317,7 +326,7 @@ class Factory(object):
             else:
                 prod.status = ProductStatus.DONE
 
-    def produce(self) -> simpy.Process:
+    def produce(self) -> simpy.Process: # type: ignore
         i = 0
         # for i in range(5):
         while True:
@@ -325,7 +334,7 @@ class Factory(object):
             yield self._env.timeout(0.1)
             i += 1
 
-    def shutDown(self) -> None:
+    def shutDown(self) -> None: # type: ignore
         if random.random() < CLOSE_RATE:
             closing_in = abs(random.normalvariate(12, 1))
             debugLog(Debug.INFO, "Factory will close today in %d units." % closing_in)
@@ -352,7 +361,9 @@ class Factory(object):
 
 
 def main() -> None:
-    for day in range(365):
+    desired_days = 1
+    #Depending on the number put in the for loop, it is the number of days it will fill the database.
+    for day in range(2):
         env = simpy.Environment()
         factory = Factory(env, day)
         env.process(factory.shutDown())
@@ -361,6 +372,7 @@ def main() -> None:
         print(factory)
         time.sleep(1)
 
+    print(df)
 
 if __name__ == '__main__':
     main()
