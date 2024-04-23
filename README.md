@@ -2,7 +2,9 @@
 Project 2 - Graphic Simulation Class - Car Assembly Factory Dashboard
 
 Streamlit is an amazing tool that lets you easily convert your Python scripts into interactive web applications without requiring any web development knowledge. 
-To run the simulation just clone this repository or download the file and run the code using a python interpreter. 
+To run the simulation just clone this repository, download the file and run the code using a python interpreter or easily join our hosted web page. 
+
+## https://car-factory-dashboard.streamlit.app/
 
 ## Installing Streamlit
 
